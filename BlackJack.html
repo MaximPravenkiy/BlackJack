@@ -1,0 +1,105 @@
+<meta charset="utf-8">
+<script>
+	
+	/* Вызов функции getRandomInt() возвращает рандомное значение в зависимости
+	 * от введённых параметров min и max
+	 */
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	/* Вызов функции getCard() возвращает рандомное значение из 
+	 * массива cards, в котором содержатся карты от двойки до туза
+	 */  
+	function getCard() {
+		let cards = ['2','3','4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+		return cards[getRandomInt(0, cards.length - 1)]; 
+	}
+
+	/* Вызов функции getSum() возвращает сумму элементов массива 
+	 * в численном эквиваленте. Массив вводится в качестве параметра
+	 */
+	function getSum(arr) {
+		let sum = 0;
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i] != 'A') {
+				if (arr[i] == 'J' || arr[i] == 'Q' || arr[i] == 'K') {
+					sum = sum + 10;
+				} else {
+					arr[i] = parseInt(arr[i]);
+					sum = sum + arr[i];
+				}
+			}
+		}
+
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i] == 'A') {
+				if (sum > 10) {
+					sum =sum + 1;
+				} else {
+					sum = sum + 11;
+				}
+			}
+		}
+		return sum;
+	}
+
+	// Функция выводит на экран карты игрока и дилера
+	function getStatus() {
+		return 'Дилер: ' + dealer.join(', ') + '\nИгрок: ' + player.join(', ');
+	}
+
+	// Раздача карт дилеру
+	let dealer = [getCard()];
+	// Раздача карт игроку
+	let player = [getCard(), getCard()];
+
+	let answer = '1';
+	let points;
+
+	// Проверяем победу игрока при раздаче карт
+	if (getSum(player) == 21) {
+		alert('Вы счастливчик - у вас Black Jack при раздаче!');
+
+	// В противном случае раздаём карты игроку, пока ему это нужно
+	} else {
+	while(answer == '1') {
+		points = getSum(player);
+		if (points < 21) {
+	answer = prompt(getStatus() +'\nХотите ещё 1 карту? 1 - да, иначе - нет.');
+			if (answer == '1') {
+			player.push(getCard());
+
+			/* Если игрок набрал достаточно количество карт, то 
+	 		* добирает карты дилер
+	 		*/
+			} else {
+				while (getSum(dealer) < 17) {
+					dealer.push(getCard());
+				}
+
+				let sumPlayer = getSum(player);
+				let sumDealer = getSum(dealer);
+
+				// Проверка на победителя
+				if (sumDealer == 21) {
+					alert('У дилера Black Jack! \n' + getStatus());
+				} else if (sumDealer > 21) {
+					alert('Дилер перебрал - вы победили! \n' + getStatus());
+				} else if (sumDealer == sumPlayer) {
+					alert('Сумма очков одинаковая - ничья! \n' + getStatus());
+				} else if (sumDealer > sumPlayer) {
+					alert('Победа дилера по очкам.' + getStatus());
+				} else {
+					alert('Вы победили по очкам - поздравляем!!! \n' + getStatus());
+				}
+			}
+		} else if (points == 21) {
+			alert('Поздравляем с победой!');
+		} else {
+			alert('Увы, вы проиграли :( ');
+		} 
+	}
+}
+
+</script>
